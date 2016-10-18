@@ -4,15 +4,21 @@
 
 This page lists some ideas for a Summer of Code project for elvish. Each project consists of several subprojects, with increasing difficulties (rated on a scale of 5 starts). For projects consisting of more than two subprojects, doing two of the them is sufficient to qualify as a SoC project.
 
-## Project: Graphical Interfaces
+## Project: Web Interface
 
-Although shells are traditionally used from the terminal, there is nothing preventing us from building graphical interfaces. The [terminal interface module](https://github.com/elves/elvish/tree/master/edit), called the line editor, is only loosely coupled with the rest of elvish.
+Although shells are traditionally tied to the terminal, graphical interfaces are not impossible. The [terminal UI module](https://github.com/elves/elvish/tree/master/edit), called the line editor, is only loosely coupled with the rest of elvish. Since elvish strives for portability, the best choice for GUI these days is a web interface.
 
-### Reading lines from a web interface ★☆☆☆☆
+Building a web interface for elvish has several advantages:
+
+1. It makes the language more attractive to beginners, especially those not familiar with the terminal UI. For instance, [Go](http://golang.org/), [Haskell](https://www.haskell.org/), [Python](https://www.python.org/) and [Ruby](https://www.ruby-lang.org/) all support "trying out" in the browser.
+
+2. Web interfaces enable us to interact with all kinds of media -- images, videos, audios, etc.. We have wonderful tools like [ImageMagick](http://www.imagemagick.org/script/index.php) and [GraphicsMagick](http://www.graphicsmagick.org/) for manipulating images and [ffmpeg](https://ffmpeg.org/) for manipulating videos, it would be even more wonderful to see the output directly.
+
+### Reading and evaluating elvish code ★☆☆☆☆
 
 To start with, the line editor has a very simple API: calling its `ReadLine` method promps the user for input and returns it. We can also get user input using a webpage, e.g. a textbox with a "submit" button. To achieve this, we need (besides building a webpage) to implement a HTTP server within elvish that can accept HTTP request, which is possible with the [net/http](https://golang.org/pkg/net/http/) package in the standard library.
 
-### Show command output in the web page ★★★☆☆
+### Showing output ★★★☆☆
 
 Besides taking input from a web page, we also need to see the output of commands. Depending on the type of the command, seveal different strategies need to be implemented:
 
@@ -22,15 +28,15 @@ Besides taking input from a web page, we also need to see the output of commands
 
 3. Other useful programs like `vim` asssumes that it is talking to a terminal, and will output special "escape sequences" to move the cursor, change the color of text, etc.. The easiest way to support such programs is by embedding a terminal emulator within the web interface. There are many JavaScript libraries that do this; google "javascript terminal emulation".
 
-### Implementing the line editor's user interface using web interface ★★★☆☆
+### Use HTML to implement advanced UI features ★★★☆☆
 
 While the API of the line editor is deceptively simple, the line editor has a rich user interface. For instance, the user can use Tab to ask the shell how incomplete code may be completed - writing `println $` and pressing Tab reveals a list of all variables. The user can also press Ctrl-N to enter "navigation mode", which mimics a file manager.
 
-While it is possible for us to simply use the terminal emulation functionality in the previous subproject to show the line editor's user interface, it would be much nicer to reimplement such interfaces using web controls. For instance, an actual dropdown menu for the Tab completion list can look much more natural when using the shell from the web.
+While it is possible for us to simply use the terminal emulation functionality in the previous subproject to show the line editor's user interface, it would be much nicer to reimplement such interfaces using HTML elements. For instance, an actual dropdown menu for the Tab completion list can look much more natural when using the shell from the web.
 
-### Android app ★★★★☆
+### Elvish instance on demand ★★★☆☆
 
-Android is based on Linux. While elvish can be run on Android within a terminal emulator, it is nice to implement various UI elements using native Android elements. This subproject is similar to the previous one but can require quite more design work.
+Now that we have a web interface we can build a public server for people to "try out" elvish. We want such a public server to allow access from any user. However, we also want to make sure that a user does not use too much resource, and data from different users are isolated. This can be implemented by building containers for elvish (using e.g. [Docker](https://www.docker.com/) or [Kubernetes](http://kubernetes.io/)) and allocating them dynamically for users.
 
 ## Project: Introspection
 
